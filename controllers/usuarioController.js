@@ -1,7 +1,4 @@
-
-/**
- * Created by Personal on 05/05/2016.
- */
+var jwt=require('jsonwebtoken');
 module.exports=function (app) {
     return{
         registro:function(req,res){
@@ -18,15 +15,55 @@ module.exports=function (app) {
         },
         login:function (req,res) {
             var Sequelize = app.get('sequelize');
-            Sequelize.query("CALL sp_autenticarUsuario('"+req.body.correo+"','"+req.body.password+"');").then(function (response) {
-                if(response.length > 0){
-                    res.status(200).send(response);
+            Sequelize.query("CALL sp_autenticarUsuario('"+req.body.correo+"','"+req.body.password+"');").then(function (user) {
+                if(user.length > 0){
+					res.json(genToken(user));
                 }else{
-                    res.status(404).send({message: "credenciales invalidas"});
+                    res.json({"user":[]});
                 }
             }).error(function (err) {
                 res.json(err)
             });
-        }
-    }
+        },
+		tokenGenerator:function(req,res){
+			var token=jwt.sign({company:'Kinal'},'S3CUR3@APP');
+			res.send(token);
+		},
+		tokenMiddleware:function(req,res,next){
+			var token=req.headers['x-access-token'] || req.body.token || req.query.token;
+			if(token){
+				jwt.verify(token,'S3CUR3@APP',function(err,decoded){
+					if(err){
+						return res.status(403).send({
+							success:false,
+							message:'Fallo al validar token'
+						});
+					}
+					req.user=decoded;
+					next();
+				});
+			}else{
+				return res.status(403).send({
+					success:false,
+					message:'No se proporciono token'
+				});
+			}
+		}
+	}
+}
+function expiresIn(dias){
+	var dateObj=new Date();
+	return dateObj.setDate(dateObj.getDate()+dias);
+}
+function genToken(user){
+	var payload=jwt.sign({
+			"company":"Kinal"
+		},
+		'S3CUR3@APP');
+	var token={
+		"token":payload,
+		"user":user,
+		"exp": expiresIn(1)
+	}
+	return token;
 }

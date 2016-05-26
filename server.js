@@ -5,6 +5,7 @@
     var morgan = require('morgan');
     var mysql = require('mysql');
     var Sequelize = require('sequelize');
+	var cors = require('cors');
 
     var sequelize = new Sequelize('db_turismo','root','',{
         host: 'localhost',

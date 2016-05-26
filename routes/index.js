@@ -19,6 +19,10 @@ module.exports = (function ( app) {
     ruta.post('/usuario/login', usuario.login);
     ruta.post('/usuario/registro', usuario.registro);
 
+	ruta.get('/token',usuario.tokenGenerator);
+	
+	ruta.use(usuario.tokenMiddleware);
+		
     /*rutas para los roles*/
     ruta.get('/rol', rol.list);
     ruta.post('/rol', rol.add);
