@@ -15,9 +15,12 @@ module.exports = function (app) {
             })
         },
         list:function (req,res) {
-            var SitioTuristico = app.get('sitioturistico');
+            var SitioTuristico = app.get('sitioTuristico');
             SitioTuristico.findAll().then(function (sitios) {
-                res.json(sitios)
+				var sit={
+					"sitios":sitios
+				}
+                res.json(sit)
             })
         },
         edit:function (req,res) {

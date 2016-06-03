@@ -11,10 +11,12 @@ module.exports = (function ( app) {
     var comentario=require('../controllers/comentarioController.js')(app);
     var sitioTuristico=require('../controllers/sitioTuristicoController.js')(app);
 
-     ruta.get('/',function (peticion,respuesta) {
-     respuesta.send("Servicio Iniciado")
-     }); 
-
+	 ruta.get('/',function (peticion,respuesta) {
+	 respuesta.send("Servicio Iniciado")
+	 }); 
+    
+	ruta.get('/sitioturistico', sitioTuristico.list);
+	 
     /*rutas para los usuarios*/
     ruta.post('/usuario/login', usuario.login);
     ruta.post('/usuario/registro', usuario.registro);
@@ -34,6 +36,12 @@ module.exports = (function ( app) {
     ruta.post('/departamento', departamento.add);
     ruta.put('/departamento', departamento.edit);
     ruta.delete('/departamento', departamento.delete);
+	
+	/*rutas para los sitios*/
+    
+    ruta.post('/sitioturistico', sitioTuristico.add);
+    ruta.put('/sitioturistico', sitioTuristico.edit);
+    ruta.delete('/sitioturistico', sitioTuristico.delete);
 
     /*rutas para los hoteles*/
     ruta.get('/hotel', hotel.list);
@@ -52,12 +60,6 @@ module.exports = (function ( app) {
     ruta.post('/comentario', comentario.add);
     ruta.put('/comentario', comentario.edit);
     ruta.delete('/comentario', comentario.delete);
-
-    /*rutas para los sitios*/
-    ruta.get('/sitioturistico', sitioTuristico.list);
-    ruta.post('/sitioturistico', sitioTuristico.add);
-    ruta.put('/sitioturistico', sitioTuristico.edit);
-    ruta.delete('/sitioturistico', sitioTuristico.delete);
 
     return ruta;
 });
