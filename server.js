@@ -10,6 +10,9 @@
     var sequelize = new Sequelize('db_turismo','root','',{
         host: 'localhost',
         dialect: 'mysql',
+		define:{
+			timestamps: false
+		},
         pool:{
             max: 20,
             min: 0
